@@ -1,15 +1,13 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
 import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBody, ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { Book } from '../models/book.model';
 import { LibraryService } from '../services/library.service';
+import { FetchAllBooksResponse } from '../responses/library-responses';
 
-// Define the response type
-class FetchAllBooksResponse {
-  @ApiProperty({ type: [Book] })
-  books: Book[];
-}
 
 // Decorate the controller class with tags and base path
 @ApiTags('Books')
