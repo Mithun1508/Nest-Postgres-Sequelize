@@ -64,7 +64,7 @@ export class LibraryController {
     }
   }
 
-  // Decorate the findById method for Swagger documentation
+  // Decorate the findById method Swagger documentation
   @Get('/:id')
   @ApiOperation({ summary: 'Get a book by ID' })
   @ApiResponse({
