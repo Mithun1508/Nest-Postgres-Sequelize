@@ -1,76 +1,88 @@
 /* eslint-disable prettier/prettier */
-// library/controllers/library.controller.ts
+
 import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBody, ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { Book } from '../models/book.model';
 import { LibraryService } from '../services/library.service';
 
+// Define the response type
+class FetchAllBooksResponse {
+  @ApiProperty({ type: [Book] })
+  books: Book[];
+}
+
+// Decorate the controller class with tags and base path
 @ApiTags('Books')
 @Controller('books')
 export class LibraryController {
+  // Inject the LibraryService in the constructor
   constructor(private readonly libraryService: LibraryService) {}
 
+  // Decorate the createBook method for Swagger documentation
   @Post()
   @ApiOperation({ summary: 'Create a new book' })
   @ApiBody({ type: Book, description: 'JSON structure for the book object' })
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
-    type: Book, // Specify the response type
+    type: Book,
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async createBook(@Res() response, @Body() book: Book) {
+  // Implement the logic for creating a new book
+  async createBook(@Res() response, @Body() book: Book): Promise<Book> {
     try {
+      // Call the library service to create a new book
       const newBook = await this.libraryService.createBook(book);
-      return response.status(HttpStatus.CREATED).json({
-        newBook,
-      });
+      // Return the newly created book in the response
+      return response.status(HttpStatus.CREATED).json(newBook);
     } catch (error) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        error: 'Internal Server Error',
-      });
+      // Handle internal server error
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
     }
   }
 
+  // Decorate the fetchAll method for Swagger documentation
   @Get()
   @ApiOperation({ summary: 'Get all books' })
   @ApiResponse({
     status: 200,
     description: 'OK',
-    type: [Book], // Specify the response type as an array of books
+    type: FetchAllBooksResponse, // Use the defined type directly
   })
-  async fetchAll(@Res() response) {
+  // Implement the logic for fetching all books
+  async fetchAll(@Res() response): Promise<FetchAllBooksResponse> {
     try {
+      // Call the library service to fetch all books
       const books = await this.libraryService.findAll();
-      return response.status(HttpStatus.OK).json({
-        books,
-      });
+      // Create the response object
+      const responseObject: FetchAllBooksResponse = { books };
+      // Return the response with the list of books
+      return response.status(HttpStatus.OK).json(responseObject);
     } catch (error) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        error: 'Internal Server Error',
-      });
+      // Handle internal server error
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
     }
   }
 
+  // Decorate the findById method for Swagger documentation
   @Get('/:id')
   @ApiOperation({ summary: 'Get a book by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the book' })
   @ApiResponse({
     status: 200,
     description: 'OK',
-    type: Book, // Specify the response type
+    type: Book,
   })
   @ApiResponse({ status: 404, description: 'Not Found' })
-  async findById(@Res() response, @Param('id') id) {
+  // Implement the logic for fetching a book by ID
+  async findById(@Res() response, @Param('id') id): Promise<Book> {
     try {
+      // Call the library service to find a book by ID
       const book = await this.libraryService.findOne(id);
-      return response.status(HttpStatus.OK).json({
-        book,
-      });
+      // Return the found book in the response
+      return response.status(HttpStatus.OK).json(book);
     } catch (error) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        error: 'Internal Server Error',
-      });
+      // Handle internal server error
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
     }
   }
 }
