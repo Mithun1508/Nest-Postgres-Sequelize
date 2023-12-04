@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 // library/controllers/library.controller.ts
 import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger'; // Import additional decorators
+import { ApiTags, ApiResponse, ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { Book } from '../models/book.model';
 import { LibraryService } from '../services/library.service';
 
@@ -11,13 +11,14 @@ export class LibraryController {
   constructor(private readonly libraryService: LibraryService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new book' }) // Add a summary for the operation
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiBody({
-    type: Book,
-    description: 'JSON structure for the book object',
+  @ApiOperation({ summary: 'Create a new book' })
+  @ApiBody({ type: Book, description: 'JSON structure for the book object' })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+    type: Book, // Specify the response type
   })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   async createBook(@Res() response, @Body() book: Book) {
     try {
       const newBook = await this.libraryService.createBook(book);
@@ -32,8 +33,12 @@ export class LibraryController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all books' }) // Add a summary for the operation
-  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiOperation({ summary: 'Get all books' })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+    type: [Book], // Specify the response type as an array of books
+  })
   async fetchAll(@Res() response) {
     try {
       const books = await this.libraryService.findAll();
@@ -48,9 +53,13 @@ export class LibraryController {
   }
 
   @Get('/:id')
-  @ApiOperation({ summary: 'Get a book by ID' }) // Add a summary for the operation
-  @ApiParam({ name: 'id', description: 'ID of the book' }) // Add a parameter description
-  @ApiResponse({ status: 200, description: 'OK' })
+  @ApiOperation({ summary: 'Get a book by ID' })
+  @ApiParam({ name: 'id', description: 'ID of the book' })
+  @ApiResponse({
+    status: 200,
+    description: 'OK',
+    type: Book, // Specify the response type
+  })
   @ApiResponse({ status: 404, description: 'Not Found' })
   async findById(@Res() response, @Param('id') id) {
     try {
