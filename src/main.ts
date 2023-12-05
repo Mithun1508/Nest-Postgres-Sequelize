@@ -30,4 +30,4 @@ async function bootstrap() {
 }
 
 // Call the bootstrap function to start the application
-bootstrap();
+bootstrap( );
