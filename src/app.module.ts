@@ -2,10 +2,11 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { AppController } from './app.controller';
+import {AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LibraryModule } from './library/library.module';
-
+import { AuthController } from './library/controllers/auth.controller';
+import firebase from './library/services/firebase.service';
 
 @Module({
   imports: [SequelizeModule.forRoot({
@@ -18,7 +19,7 @@ import { LibraryModule } from './library/library.module';
     autoLoadModels: true,
     synchronize: true
   }), LibraryModule],
-  controllers: [AppController],
+  controllers: [AppController,AuthController],
   providers: [AppService],
 })
 export class AppModule {}

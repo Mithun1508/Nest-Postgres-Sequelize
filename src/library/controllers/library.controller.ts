@@ -27,7 +27,7 @@ export class LibraryController {
     }
   }
 
-  //sending the struct of data as well
+  //sending the struct of data
   // controllers return type is a Promise<FetchAllBooksResponse> and set the Swagger logs to that object.
   @Get()
   @ApiOperation({ summary: 'Get all books' })
@@ -50,7 +50,6 @@ export class LibraryController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Not Found' })
   async findById(@Res() response, @Param('id') id): Promise<Book> {
-    //create an object and set response for it 
     try {
       const book = await this.libraryService.findOne(id);
       return response.status(HttpStatus.OK).json(book);
